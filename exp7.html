@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Budget Calculator App (React JS)</title>
+    <!-- React & Babel CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #b8e7f5;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 500px;
+        margin: 50px auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+      }
+
+      h2 {
+        text-align: center;
+        color: #007bff;
+      }
+
+      input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      .result {
+        margin-top: 20px;
+        font-size: 16px;
+      }
+
+      .green {
+        color: green;
+        font-weight: bold;
+      }
+
+      .red {
+        color: red;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState } = React;
+
+      function BudgetCalculator() {
+        const [income, setIncome] = useState("");
+        const [rent, setRent] = useState("");
+        const [food, setFood] = useState("");
+        const [transport, setTransport] = useState("");
+        const [others, setOthers] = useState("");
+        const [balance, setBalance] = useState(null);
+
+        const handleCalculate = () => {
+          if (!income || !rent || !food || !transport || !others) {
+            alert("Please fill in all fields!");
+            return;
+          }
+
+          const vals = [income, rent, food, transport, others].map(Number);
+          if (vals.some((v) => v < 0 || isNaN(v))) {
+            alert("All values must be positive numbers!");
+            return;
+          }
+
+          const [i, r, f, t, o] = vals;
+          const remaining = i - (r + f + t + o);
+          setBalance(remaining);
+        };
+
+        return (
+          <div className="container">
+            <h2>💰 Budget Calculator App</h2>
+
+            <label>Monthly Income:</label>
+            <input
+              type="number"
+              value={income}
+              onChange={(e) => setIncome(e.target.value)}
+              placeholder="Enter your income"
+            />
+
+            <label>Rent / EMI:</label>
+            <input
+              type="number"
+              value={rent}
+              onChange={(e) => setRent(e.target.value)}
+              placeholder="Enter rent or EMI"
+            />
+
+            <label>Food Expenses:</label>
+            <input
+              type="number"
+              value={food}
+              onChange={(e) => setFood(e.target.value)}
+              placeholder="Enter food expenses"
+            />
+
+            <label>Transport Expenses:</label>
+            <input
+              type="number"
+              value={transport}
+              onChange={(e) => setTransport(e.target.value)}
+              placeholder="Enter transport expenses"
+            />
+
+            <label>Other Expenses:</label>
+            <input
+              type="number"
+              value={others}
+              onChange={(e) => setOthers(e.target.value)}
+              placeholder="Enter other expenses"
+            />
+
+            <button onClick={handleCalculate}>Calculate Balance</button>
+
+            {balance !== null && (
+              <div className="result">
+                <p>
+                  <b>Remaining Balance:</b>{" "}
+                  <span className={balance < 0 ? "red" : "green"}>
+                    {balance}
+                  </span>
+                </p>
+                {balance < 0 ? (
+                  <p className="red">⚠️ You are overspending!</p>
+                ) : (
+                  <p className="green">
+                    ✅ Good job managing your expenses!
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<BudgetCalculator />);
+    </script>
+  </body>
+</html>
+
